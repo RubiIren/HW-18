@@ -2,10 +2,9 @@ package tests;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.logevents.SelenideLogger;
-import config.WebConfig;
+import config.CredentialsConfig;
 import helpers.Attach;
 import io.qameta.allure.selenide.AllureSelenide;
-import io.restassured.RestAssured;
 import org.aeonbits.owner.ConfigFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,17 +16,21 @@ public class TestBase {
     @BeforeAll
     public static void configure() {
         SelenideLogger.addListener("AllureSelenide", new AllureSelenide());
-        WebConfig config = ConfigFactory.create(WebConfig.class, System.getProperties());
+        CredentialsConfig config = ConfigFactory.create(CredentialsConfig.class);//owner
 
-        Configuration.browserSize = config.getBrowserSize();
-        Configuration.browser = config.getBrowser();
-        Configuration.browserVersion = config.getBrowserVersion();
-        if (!config.getRemoteUrl().equals("")) {
-            Configuration.remote = config.getRemoteUrl();
-        }
+        String loginSelenoid = config.loginSelenoid(),
+                passwordSelenoid = config.passwordSelenoid();
+        String browser = System.getProperty("browser", "chrome");
+        String baseUrl = System.getProperty("baseUrl", "http://demowebshop.tricentis.com");
+        String browserSize = System.getProperty("browserSize", "1920x1080");
+        String selenoidUrl = System.getProperty("remote", "selenoid.autotests.cloud");
 
-        Configuration.baseUrl = "http://demowebshop.tricentis.com";
-        RestAssured.baseURI = "http://demowebshop.tricentis.com";
+        Configuration.browser = browser;
+        Configuration.baseUrl = baseUrl;
+        Configuration.browserSize = browserSize;
+        Configuration.remote = "https://" + loginSelenoid + ":" + passwordSelenoid + "@" + selenoidUrl + "/wd/hub";
+
+
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability("enableVNC", true);
         capabilities.setCapability("enableVideo", true);
