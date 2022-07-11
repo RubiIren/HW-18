@@ -5,6 +5,7 @@ import com.codeborne.selenide.logevents.SelenideLogger;
 import config.CredentialsConfig;
 import helpers.Attach;
 import io.qameta.allure.selenide.AllureSelenide;
+import io.restassured.RestAssured;
 import org.aeonbits.owner.ConfigFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,6 +28,7 @@ public class TestBase {
 
         Configuration.browser = browser;
         Configuration.baseUrl = baseUrl;
+        RestAssured.baseURI = "http://demowebshop.tricentis.com";
         Configuration.browserSize = browserSize;
         Configuration.remote = "https://" + loginSelenoid + ":" + passwordSelenoid + "@" + selenoidUrl + "/wd/hub";
 
